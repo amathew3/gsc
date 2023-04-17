@@ -22,8 +22,12 @@ RUN apt-get update \
 # For compatibility with Gramine v1.3 or lower
     && /usr/bin/python3 -B -m pip install 'toml>=0.10' \
 # Since all needed pip packages are installed, we can uninstall python3-pip safely
+<<<<<<< HEAD
     && apt-get remove -y python3-pip \
     && apt-get autoremove -y \
+=======
+    && apt remove -y python3-pip  && apt autoremove -y \
+>>>>>>> merging PR141 and PR144 for testing
     && rm -rf /var/lib/apt/lists/*
 
 {% if buildtype != "release" %}
