@@ -1,14 +1,13 @@
 {% extends "Dockerfile.common.sign.template" %}
 
 {% block uninstall %}
-{% if remove_gramine_deps %}
-   RUN \
-       apt update -y \
-       && apt install -y python3-pip \
+RUN \
+       apt-get update -y \
+       && apt-get install -y python3-pip \
        && pip3 uninstall -y click jinja2 \
           'tomli>=1.1.0' 'tomli-w>=0.4.0' \
           'toml>=0.10' \
-       && apt remove -y binutils \
+       && apt-get remove -y binutils \
           expect \
           libcurl4-openssl-dev \
           openssl \
@@ -16,9 +15,8 @@
           python3-protobuf \
           python3-cryptography \
           python3-pyelftools \
-       && apt autoremove -y \
+       && apt-get autoremove -y \
        && rm -rf /var/lib/apt/lists/*;
-{% endif %}
 {% endblock %}
 
 {% block path %}export PYTHONPATH="${PYTHONPATH}:$(find /gramine/meson_build_output/lib -type d -path '*/site-packages')" &&{% endblock %}
