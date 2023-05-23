@@ -169,6 +169,10 @@ of the signing key in them.
 
    Provide passphrase for the enclave signing key (if applicable)
 
+.. option:: -D, --define
+
+   Set image sign-time variables during :command:`gsc sign`.
+
 .. option:: --remove-gramine-deps
 
    Remove Gramine dependencies that are not needed at runtime. This may have
