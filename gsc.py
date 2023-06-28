@@ -217,14 +217,20 @@ def gsc_build(args):
 
     distro = env.globals['Distro']
 
-    distro, _ = distro.split(':')
-    env.globals.update({'compile_template': f'{distro}/Dockerfile.compile.template'})
+    distro, version = distro.split(':')
+    if version == "12" or version == "22.04":
+        env.globals.update({'compile_template': f'{distro}{version}/Dockerfile.compile.template'})
+    else:
+        env.globals.update({'compile_template': f'{distro}/Dockerfile.compile.template'})
     env.loader = jinja2.FileSystemLoader('templates/')
 
     # generate Dockerfile.build from Jinja-style templates/<distro>/Dockerfile.build.template
     # using the user-provided config file with info on OS distro, Gramine version and SGX driver
     # and other env configurations generated above
-    build_template = env.get_template(f'{distro}/Dockerfile.build.template')
+    if version == "12" or version == "22.04":
+        build_template = env.get_template(f'{distro}{version}/Dockerfile.build.template')
+    else:
+        build_template = env.get_template(f'{distro}/Dockerfile.build.template')
     with open(tmp_build_path / 'Dockerfile.build', 'w') as dockerfile:
         dockerfile.write(build_template.render())
 
@@ -324,7 +330,10 @@ def gsc_build_gramine(args):
     # generate Dockerfile.compile from Jinja-style templates/<distro>/Dockerfile.compile.template
     # using the user-provided config file with info on OS distro, Gramine version and SGX driver
     # and other user-provided args (see argparser::gsc_build_gramine below)
-    compile_template = env.get_template(f'{distro}/Dockerfile.compile.template')
+    if version == "12" or version == "22.04":
+        compile_template = env.get_template(f'{distro}{version}/Dockerfile.compile.template')
+    else:
+        compile_template = env.get_template(f'{distro}/Dockerfile.compile.template')
     with open(tmp_build_path / 'Dockerfile.compile', 'w') as dockerfile:
         dockerfile.write(compile_template.render())
 
@@ -373,9 +382,12 @@ def gsc_sign_image(args):
     env.tests['trueish'] = test_trueish
     distro = env.globals['Distro']
 
-    distro, _ = distro.split(':')
+    distro, version = distro.split(':')
     env.loader = jinja2.FileSystemLoader('templates/')
-    sign_template = env.get_template(f'{distro}/Dockerfile.sign.template')
+    if version == 12 or version == 22.04:
+        sign_template = env.get_template(f'{distro}{version}/Dockerfile.sign.template')
+    else:
+        sign_template = env.get_template(f'{distro}/Dockerfile.sign.template')
 
     os.makedirs(tmp_build_path, exist_ok=True)
     with open(tmp_build_path / 'Dockerfile.sign', 'w') as dockerfile:
