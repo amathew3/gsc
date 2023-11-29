@@ -1,0 +1,60 @@
+libos.check_invalid_pointers = false
+libos.entrypoint="/opt/besu/bin/besu"
+loader.pal_internal_mem_size = "128M"
+sgx.enclave_size = "16G"
+sgx.max_threads = 256
+sys.insecure__allow_eventfd = true
+sys.enable_extra_runtime_domain_names_conf = true
+sys.experimental__enable_flock = true
+loader.insecure__use_host_env = true
+sgx.file_check_policy = "allow_all_but_log"
+loader.env.JAVA_HOME ="/usr/lib/jvm/java-17-openjdk-amd64"
+loader.env.APP_HOME ="/opt/besu"
+sys.ioctl_structs.ifconf = [
+
+  # When ifc_req is NULL, direction of ifc_len is out. Otherwise, direction is in.
+
+  { size = 4, direction = "inout", name = "ifc_len" },  # ifc_len
+
+  { size = 4, direction = "none" },                     # padding
+
+  { ptr = [ { size = "ifc_len", direction = "in" } ] }, # ifc_req
+
+]
+
+sys.ioctl_structs.ifreq = [
+
+  { size = 16, direction = "out" }, # ifr_name
+
+  { size = 24, direction = "in" },  # ifr_hwaddr
+
+]
+sys.allowed_ioctls = [
+
+  { request_code = 0x8912, struct = "ifconf" }, # SIOCGIFCONF
+
+  { request_code = 0x8927, struct = "ifreq" },  # SIOCGIFHWADDR
+  { request_code = 0x8913, struct = "ifreq" }, # SIOCGIFFLAGS
+  { request_code = 0x891b, struct = "ifreq" }, # SIOCGIFNETMASK
+  { request_code = 0x8933, struct = "ifreq" }, #SIOCGIFINDEX
+  { request_code = 0x8919, struct = "ifreq" }, #SIOCGIFBRDADDR
+
+]
+
+fs.mounts = [
+  { path = "/etc", uri = "file:/etc" },
+  { path = "/tmp", uri = "file:/tmp" },
+]
+sgx.allowed_files = [
+  "file:/etc/nsswitch.conf",
+  "file:/etc/host.conf",
+  "file:/etc/ethers",
+  "file:/etc/hosts",
+  "file:/etc/resolv.conf",
+  "file:/etc/group",
+  "file:/etc/passwd",
+  "file:/etc/gai.conf",
+  "file:/usr/{{ arch_libdir }}/",
+  "file:/opt/besu",
+]
+
