@@ -9,6 +9,8 @@ RUN apt-get update \
     && env DEBIAN_FRONTEND=noninteractive apt-get install -y \
         binutils \
         libprotobuf-c-dev \
+        vim \
+        libjemalloc-dev \
         locales \
         openssl \
         python3 \
