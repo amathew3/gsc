@@ -49,6 +49,8 @@ RUN /gramine/meson_build_output/bin/gramine-argv-serializer \
         {{ cmd | map('shlex_quote') | join(' ') }} > /gramine/app_files/trusted_argv
 {% endif %}
 
+RUN sed '/APP_ARGS=`save "$@"`/s/$/\necho args=$APP_ARGS/' -i /opt/besu/bin/besu
+
 # Docker entrypoint/cmd typically contains only the basename of the executable so create a symlink
 RUN cd /gramine/app_files/ \
     && which {{binary}} | xargs ln -s || true
