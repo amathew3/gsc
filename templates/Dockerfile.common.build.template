@@ -51,6 +51,8 @@ RUN /gramine/meson_build_output/bin/gramine-argv-serializer \
 
 RUN sed '/APP_ARGS=`save "$@"`/s/$/\necho args=$APP_ARGS/' -i /opt/besu/bin/besu
 
+#Workaround for gramint-sgx not stripping the escape charater
+RUN sed -i 's/APP_ARGS=`save "$@"`/APP_ARGS="$@"/g' /opt/besu/bin/besu
 # Docker entrypoint/cmd typically contains only the basename of the executable so create a symlink
 RUN cd /gramine/app_files/ \
     && which {{binary}} | xargs ln -s || true
